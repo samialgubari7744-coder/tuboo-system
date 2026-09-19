@@ -91,3 +91,14 @@ def calculate_total_revenue():
 
 # تجربة حساب الأرباح والمبيعات
 calculate_total_revenue()
+def add_new_branch(branch_name, city):
+    branch = {
+        "branch_name": branch_name,
+        "city": city,
+        "status": "مفعل"
+    }
+    branches_database.append(branch)
+    print(f"تم إضافة الفرع بنجاح: {branch_name} - مدينة {city}")
+
+# تجربة إضافة فرع جديد للنظام
+add_new_branch("فرع الرياض الرئيسي", "الرياض")
