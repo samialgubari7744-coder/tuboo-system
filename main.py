@@ -55,3 +55,23 @@ add_new_client("محمد أحمد", "0501234567", 42, 38, 60)
 create_order("محمد أحمد", "قماش قطن ياباني", 250)
 
 print(f"إحصائيات النظام -> المستخدمين: {len(users_database)} | العملاء: {len(clients_database)} | الطلبات: {len(orders_database)}")
+def create_order(client_name, fabric_type, price):
+    order = {
+        "client": client_name,
+        "fabric": fabric_type,
+        "price": price,
+        "status": "تحت القياس"
+    }
+    orders_database.append(order)
+    
+    invoice = {
+        "client": client_name,
+        "total_amount": price,
+        "tax": price * 0.15,
+        "net_total": price * 1.15
+    }
+    invoices_database.append(invoice)
+    print(f"تم إنشاء الطلب للعميل: {client_name} بقيمة صافية: {invoice['net_total']} ريال")
+
+# تجربة إنشاء طلب وفاتورة
+create_order("محمد أحمد", "قماش قطن ياباني", 250)
