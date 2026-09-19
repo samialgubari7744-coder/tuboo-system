@@ -83,3 +83,11 @@ def display_orders():
 
 # تجربة عرض الطلبات
 display_orders()
+def calculate_total_revenue():
+    total_revenue = sum(invoice['net_total'] for invoice in invoices_database)
+    print(f"\n--- التقارير المالية ---")
+    print(f"إجمالي المبيعات والأرباح (شامل الضريبة): {total_revenue} ريال")
+    print(f"عدد الفواتير الصادرة: {len(invoices_database)}")
+
+# تجربة حساب الأرباح والمبيعات
+calculate_total_revenue()
