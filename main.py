@@ -1,8 +1,23 @@
-# Tuboo Tailoring Management System
-print("مرحباً بك في نظام إدارة مشاغل الخياطة - تيوبو")
+# Tuboo Tailoring Management System - Database Simulation
+print("--- مرحباً بك في نظام إدارة مشاغل الخياطة (تيوبو) ---")
 
-# بيانات تجريبية للنظام
-store_name = "مشغل تيوبو للخياطة الرجالية"
-version = "1.0.0"
+# قائمة لتخزين العملاء والمقاسات مؤقتاً
+clients_database = []
 
-print(f"النظام يعمل الآن بنجاح لـ: {store_name} (الإصدار {version})")
+def add_new_client(name, phone, chest, waist, length):
+    client = {
+        "name": name,
+        "phone": phone,
+        "measurements": {
+            "chest": chest,
+            "waist": waist,
+            "length": length
+        }
+    }
+    clients_database.append(client)
+    print(f"تم إضافة العميل بنجاح: {name}")
+
+# تجربة إضافة عميل للنظام
+add_new_client("محمد أحمد", "0501234567", 42, 38, 60)
+
+print(f"إجمالي عدد العملاء المسجلين حالياً: {len(clients_database)}")
