@@ -1,10 +1,19 @@
-# نظام إدارة الخياطة Tuboo - محاكاة كاملة مع الفواتير وتتبع الطلبات
+# نظام إدارة الخياطة Tuboo - مع إدارة الأدوار وصلاحيات المستخدمين
 print("--- مرحباً بك في نظام إدارة مشاغل الخياطة (تيوبو) ---")
 
 # قوائم تخزين البيانات مؤقتاً
 clients_database = []
 orders_database = []
 invoices_database = []
+users_database = []
+
+def add_system_user(username, role):
+    user = {
+        "username": username,
+        "role": role # الأدوار: مدير, استقبال, خياط
+    }
+    users_database.append(user)
+    print(f"تم إضافة المستخدم: {username} بدور: {role}")
 
 def add_new_client(name, phone, chest, waist, length):
     client = {
@@ -28,26 +37,21 @@ def create_order(client_name, fabric_type, price):
     }
     orders_database.append(order)
     
-    # إصدار فاتورة تلقائية للطلب
     invoice = {
         "client": client_name,
         "total_amount": price,
-        "tax": price * 0.15, # احتساب ضريبة القيمة المضافة 15%
+        "tax": price * 0.15,
         "net_total": price * 1.15
     }
     invoices_database.append(invoice)
-    
-    print(f"تم إنشاء الطلب وإصدار الفاتورة للعميل: {client_name} - المبلغ الإجمالي مع الضريبة: {invoice['net_total']} ريال")
+    print(f"تم إنشاء الطلب للعميل: {client_name} بقيمة صافية: {invoice['net_total']} ريال")
 
-def update_order_status(client_name, new_status):
-    for order in orders_database:
-        if order["client"] == client_name:
-            order["status"] = new_status
-            print(f"تم تحديث حالة طلب العميل {client_name} إلى: {new_status}")
+# إعداد الصلاحيات وتجربة النظام:
+add_system_user("سالم", "مدير النظام")
+add_system_user("خالد", "موظف استقبال")
+add_system_user("أحمد", "خياط")
 
-# تجربة النظام المحدث:
 add_new_client("محمد أحمد", "0501234567", 42, 38, 60)
 create_order("محمد أحمد", "قماش قطن ياباني", 250)
-update_order_status("محمد أحمد", "قيد الخياطة")
 
-print(f"إحصائيات النظام -> العملاء: {len(clients_database)} | الطلبات: {len(orders_database)} | الفواتير: {len(invoices_database)}")
+print(f"إحصائيات النظام -> المستخدمين: {len(users_database)} | العملاء: {len(clients_database)} | الطلبات: {len(orders_database)}")
