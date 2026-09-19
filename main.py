@@ -1,3 +1,4 @@
+
 # نظام إدارة الخياطة Tuboo - مع إدارة الأدوار وصلاحيات المستخدمين
 print("--- مرحباً بك في نظام إدارة مشاغل الخياطة (تيوبو) ---")
 
@@ -75,3 +76,10 @@ def create_order(client_name, fabric_type, price):
 
 # تجربة إنشاء طلب وفاتورة
 create_order("محمد أحمد", "قماش قطن ياباني", 250)
+def display_orders():
+    print("\n--- قائمة الطلبات الحالية ---")
+    for index, order in enumerate(orders_database, 1):
+        print(f"{index}. العميل: {order['client']} | القماش: {order['fabric']} | الحالة: {order['status']}")
+
+# تجربة عرض الطلبات
+display_orders()
