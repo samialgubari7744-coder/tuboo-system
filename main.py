@@ -189,16 +189,16 @@ elif selected_tab == "📝 تسجيل قياسات وطلب جديد":
             order_status = st.selectbox("حالة الطلب المبدئية", ["جديد", "قيد التجهيز", "جاهز للاستلام"])
 
         st.markdown("---")
-        st.markdown("### 2️⃣ جدول المقاسات الدقيقة (بالإنش)")
+        st.markdown("### 2️⃣ جدول المقاسات
         m1, m2, m3, m4 = st.columns(4)
         with m1:
-            length = st.number_input("الطول", value=58.0, format="%.2f")
+            length = st.number_input("الطول", value=00, format="%.2f")
         with m2:
-            shoulder = st.number_input("الكتف", value=24.0, format="%.2f")
+            shoulder = st.number_input("الكتف", value=00, format="%.2f")
         with m3:
-            neck = st.number_input("الرقبة", value=15.5, format="%.2f")
+            neck = st.number_input("الرقبة", value=00, format="%.2f")
         with m4:
-            sleeve = st.number_input("طول اليد", value=25.0, format="%.2f")
+            sleeve = st.number_input("طول اليد", value=00, format="%.2f")
 
         st.markdown("---")
         st.markdown("### 3️⃣ تفاصيل القصات والتصميم")
@@ -206,7 +206,7 @@ elif selected_tab == "📝 تسجيل قياسات وطلب جديد":
         with d1:
             collar_type = st.selectbox("نوع الياقة", ["رقبة سادة خفيف", "رقبة سادة دبل", "رقبة صيني", "قلاب رسمي"])
         with d2:
-            zipper_type = st.selectbox("نوع الجبزور", ["بابين", "سحاب مثلث", "مخفي"])
+            zipper_type = st.selectbox("نوع الجبزور", ["باين مربع"," باين مثلث " , "سحاب مربع" , "سحاب مثلث","مخفي مربع","مخفي مثلث"])
         with d3:
             price = st.number_input("مبلغ الفاتورة الإجمالي (ر.س)", min_value=0.0, value=250.0)
 
