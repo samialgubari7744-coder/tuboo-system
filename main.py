@@ -1,18 +1,27 @@
+import streamlit as st
+
 # Tuboo Tailoring Management System
-print("Welcome to Tuboo Tailoring Management System")
+st.title("Tuboo Tailoring Management System")
 
 store_name = "Tuboo Men Tailoring"
 version = "1.0.0"
 
-print("Store Name: " + store_name)
-print("Version: " + version)
+st.write("Store Name: " + store_name)
+st.write("Version: " + version)
 
-clients_database = []
+# Session state to store clients
+if 'clients' not in st.session_state:
+    st.session_state.clients = []
 
-def add_new_client(name, phone):
-    client = {"name": name, "phone": phone}
-    clients_database.append(client)
-    print("Client added successfully: " + name)
+st.subheader("Add New Client")
+client_name = st.text_input("Client Name")
+client_phone = st.text_input("Phone Number")
 
-add_new_client("Ahmed Mohammed", "0501234567")
-print("Total Clients: 1")
+if st.button("Save Client"):
+    if client_name and client_phone:
+        st.session_state.clients.append({"name": client_name, "phone": client_phone})
+        st.success("Client added successfully: " + client_name)
+    else:
+        st.warning("Please fill in all fields")
+
+st.write("Total Clients:", len(st.session_state.clients))
