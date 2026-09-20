@@ -50,13 +50,8 @@ with st.form("tailoring_form"):
         shoulder = st.number_input("الكتف", value=0.0, format="%.2f")
         sleeve_length = st.number_input("طول اليد", value=0.0, format="%.2f")
         
-        # تقسيم خلية "وسع اليد" إلى جزأين (جهة يمنى وجهة يسرى)
-        st.markdown("وسع اليد")
-        sw_col1, sw_col2 = st.columns(2)
-        with sw_col1:
-            sleeve_width_right = st.text_input("الجهة اليمنى", placeholder="الرقم")
-        with sw_col2:
-            sleeve_width_left = st.text_input("الجهة اليسرى", placeholder="الرقم")
+        # خلية وسع اليد الموحدة (تكتب فيها القيمتين بحرية في نفس الخلية)
+        sleeve_width = st.text_input("وسع اليد")
 
     with m_col2:
         neck = st.number_input("الرقبة", value=0.0, format="%.2f")
@@ -130,4 +125,4 @@ with st.form("tailoring_form"):
 
     submitted = st.form_submit_button("حفظ تفاصيل الطلب والمقاسات")
     if submitted:
-        st.success(f"تم حفظ الطلب بنجاح! وسع اليد (يمين: {sleeve_width_right} | يسار: {sleeve_width_left})")
+        st.success(f"تم حفظ الطلب بنجاح! وسع اليد المدخل: {sleeve_width}")
