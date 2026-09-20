@@ -1,5 +1,21 @@
 import streamlit as st
 
+# ضبط إعدادات الصفحة لتكون من اليمين لليسار (RTL) عبر ترميز HTML/CSS بسيط
+st.markdown(
+    """
+    <style>
+    body, [data-testid="stAppViewContainer"] {
+        direction: rtl;
+        text-align: right;
+    }
+    .stSelectbox, .stRadio, .stTextInput, .stNumberInput, .stDateInput, .stTextArea {
+        text-align: right;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 st.set_page_config(page_title="خياطة تيوبو - تفاصيل الثوب", layout="centered")
 
 st.title("خياطة تيوبو للخياطة الرجالية")
@@ -32,11 +48,28 @@ with st.form("tailoring_form"):
     with m_col2:
         neck = st.number_input("الرقبة", value=0.0)
         width = st.number_input("الوسع", value=0.0)
-        sleeve_width = st.number_input("وسع اليد", value=0.0)
+        # تقسيم وسع اليد إلى مقاسين (وسع اليد العادي وعرض الأساور/الكبك)
+        sub_col1, sub_col2 = st.columns(2)
+        with sub_col1:
+            sleeve_width_1 = st.number_input("وسع اليد (1)", value=0.0)
+        with sub_col2:
+            sleeve_width_2 = st.number_input("وسع اليد (2 - كبك/أساور)", value=0.0)
 
     st.markdown("---")
     st.markdown("### 3. خيارات التصميم والقص")
     
+    # إضافة خلية الخطوة
+    step_name = st.selectbox(
+        "الخطوة",
+        [
+            "1. استقبال الطلب وأخذ المقاسات",
+            "2. مرحلة القص",
+            "3. مرحلة الخياطة",
+            "4. مرحلة الكي والتفتيش",
+            "5. جاهز للتسليم"
+        ]
+    )
+
     d_col1, d_col2 = st.columns(2)
     with d_col1:
         sleeve_type = st.selectbox(
@@ -44,7 +77,7 @@ with st.form("tailoring_form"):
             [
                 "✂️ يد سادة (عادي)", 
                 "👔 يد كبك سادة", 
-                "📐 عادي جيبرور"
+                "📐 عادي جبزور"
             ]
         )
         collar_type = st.selectbox(
@@ -67,28 +100,30 @@ with st.form("tailoring_form"):
             ]
         )
 
-    st.markdown("---")
-    st.markdown("### 4. اختيار شكل جيب الصدر (تنسيق عمودي)")
+    st.markdown("#### 📍 اختيار شكل جيب الصدر")
+    st.markdown("تنبيه: جميع الجيوب تكون في الجهة اليسرى")
     
-    # استخدام radio لتنسيق الخيارات بشكل عمودي عند الاختيار
-    chest_pocket = st.radio(
+    pocket_options = {
+        "1": "🟦 1. جيب مربع",
+        "2": "🔻 2. جيب مدبب",
+        "3": "🔵 3. جيب بحافة دائرية",
+        "4": "📑 4. جيب بشريحة",
+        "5": "🧢 5. جيب بغطاء خارجي",
+        "6": "📥 6. جيب بغطاء مخفي",
+        "7": "📐 7. جيب بزاوية",
+        "8": "📑 8. جيب بخط مزدوج",
+        "9": "🧵 9. جيب بخياطة بارزة",
+        "10": "⬜ 10. جيب بدون خياطة ظاهرة"
+    }
+
+    selected_pocket_key = st.radio(
         "اختر شكل الجيب المناسب:",
-        [
-            "1️⃣ جيب مربع",
-            "2️⃣ جيب مدبب",
-            "3️⃣ جيب بحافة دائرية",
-            "4️⃣ جيب بشريحة",
-            "5️⃣ جيب بغطاء خارجي",
-            "6️⃣ جيب بغطاء مخفي",
-            "7️⃣ جيب بزاوية",
-            "8️⃣ جيب بخط مزدوج",
-            "9️⃣ جيب بخياطة بارزة",
-            "🔟 جيب بدون خياطة ظاهرة"
-        ]
+        list(pocket_options.keys()),
+        format_func=lambda x: pocket_options[x]
     )
 
-    notes = st.text_area("الملاحظات الإضافية (تنبيه: جميع الجيوب تكون في الجهة اليسرى)")
+    notes = st.text_area("الملاحظات الإضافية")
 
     submitted = st.form_submit_button("حفظ تفاصيل الطلب والمقاسات")
     if submitted:
-        st.success("تم حفظ تفاصيل الطلب والمقاسات بنجاح في خياطة تيوبو!")
+        st.success(f"تم حفظ تفاصيل الطلب بنجاح للخطوة: {step_name}!")
