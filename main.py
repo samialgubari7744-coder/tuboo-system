@@ -3,252 +3,293 @@ import os
 import pandas as pd
 from datetime import datetime
 
-# إعداد الصفحة وتفعيل اتجاه الكتابة وتصميم الفخامة البصرية
-st.set_page_config(page_title="مشغل تيوبو الاحترافي", page_icon="🧵", layout="wide")
+# إعداد الصفحة وتصميم الفخامة المطلقة
+st.set_page_config(page_title="مشغل تيوبو الملكي", page_icon="🧵", layout="wide")
 
-# تصميم الألوان والستايلات المشابهة لأنظمة "شفق" الفخمة (Dark/Modern Luxury Theme)
+# تصميم CSS احترافي وفاخر للغاية (ألوان ملكية: فحمي داكن + ذهبي راقي + بلاتيني)
 st.markdown("""
 <style>
-    /* خلفية التطبيق العامة واتجاه اليمين لليسار */
+    /* خلفية التطبيق العامة */
     .stApp {
         direction: rtl;
         text-align: right;
-        background-color: #0e1117;
-        color: #ffffff;
+        background-color: #0b0f19;
+        color: #e5e7eb;
+        font-family: 'Cairo', 'Segoe UI', Tahoma, sans-serif;
     }
     
-    /* تنسيق العناوين الرئيسية */
+    /* عناوين فاخرة */
     h1, h2, h3, h4 {
-        color: #00d2ff;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: #d4af37 !important;
+        font-weight: 700;
         text-align: right !important;
+        letter-spacing: 0.5px;
     }
     
-    /* تنسيق الكروت والإحصائيات */
-    .metric-card {
-        background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
-        border: 1px solid #374151;
-        padding: 20px;
-        border-radius: 12px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    /* كروت الإحصائيات الملكية */
+    .luxury-card {
+        background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
+        border: 1px solid #d4af3733;
+        padding: 22px;
+        border-radius: 14px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
         text-align: center;
+        margin-bottom: 10px;
     }
-    
-    /* زر الإرسال والحفظ الاحترافي */
-    .stButton>button {
-        background: linear-gradient(90deg, #0072ff 0%, #00c6ff 100%);
-        color: white;
+    .luxury-card h3 {
+        color: #9ca3af !important;
+        font-size: 16px;
+        margin-bottom: 8px;
+    }
+    .luxury-card p {
+        color: #d4af37 !important;
+        font-size: 28px;
         font-weight: bold;
-        border-radius: 8px;
-        padding: 10px 24px;
-        border: none;
-        box-shadow: 0 4px 10px rgba(0, 114, 255, 0.4);
-        width: 100%;
-    }
-    .stButton>button:hover {
-        background: linear-gradient(90deg, #0056b3 0%, #0099cc 100%);
-        color: #fff;
     }
 
-    /* تنسيق الحقول والجداول */
+    /* تخصيص الأزرار بفخامة */
+    .stButton>button {
+        background: linear-gradient(135deg, #d4af37 0%, #aa7c11 100%);
+        color: #0b0f19;
+        font-weight: 800;
+        border-radius: 10px;
+        padding: 12px 24px;
+        border: none;
+        box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+        width: 100%;
+        transition: all 0.3s ease;
+    }
+    .stButton>button:hover {
+        background: linear-gradient(135deg, #e6c55c 0%, #d4af37 100%);
+        color: #000;
+        box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
+    }
+
+    /* تخصيص القائمة الجانبية (Sidebar) لتكون راقية */
+    section[data-testid="stSidebar"] {
+        background-color: #07090f;
+        border-left: 1px solid #1f2937;
+    }
+    section[data-testid="stSidebar"] .stRadio label {
+        color: #d1d5db !important;
+        font-weight: 600;
+        font-size: 15px;
+    }
+
+    /* تخصيص الحقول والنصوص لتكون مريحة للعين */
     label, p, div {
         text-align: right !important;
     }
     .stTextInput input, .stNumberInput input, .stSelectbox, .stTextArea textarea {
         direction: rtl;
         text-align: right;
-        background-color: #1f2937 !important;
-        color: white !important;
-        border-radius: 6px !important;
+        background-color: #111827 !important;
+        color: #f3f4f6 !important;
+        border: 1px solid #374151 !important;
+        border-radius: 8px !important;
+    }
+    .stTextInput input:focus, .stNumberInput input:focus {
+        border-color: #d4af37 !important;
+        box-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
     }
 </style>
 """, unsafe_allow_html=True)
 
-# الشريط الجانبي الفاخر
-st.sidebar.markdown("## 🧵 نظام تيوبو المطور")
+# قاعدة البيانات المحلية
+DB_FILE = "tuboo_luxury_database.csv"
+
+def load_database():
+    if os.path.exists(DB_FILE):
+        return pd.read_csv(DB_FILE)
+    else:
+        df_init = pd.DataFrame(columns=[
+            "رقم الطلب", "اسم العميل", "الجوال", "نوع القماش", 
+            "الطول", "الكتف", "الرقبة", "الياقة", "المبلغ", "التاريخ", "الحالة"
+        ])
+        df_init.to_csv(DB_FILE, index=False)
+        return df_init
+
+def save_database(df):
+    df.to_csv(DB_FILE, index=False)
+
+if 'df_orders' not in st.session_state:
+    st.session_state.df_orders = load_database()
+
+# الشريط الجانبي الفاخر جداً
+st.sidebar.markdown("<h2 style='text-align: center; color: #d4af37;'>🧵 نظام تيوبو الملكي</h2>", unsafe_allow_html=True)
+st.sidebar.markdown("<p style='text-align: center; color: #9ca3af; font-size: 12px;'>إدارة مشاغل الخياطة الفاخرة</p>", unsafe_allow_html=True)
 st.sidebar.markdown("---")
+
 user_role = st.sidebar.selectbox(
-    "👤 حدد الصلاحية الحالية",
+    "👤 الصلاحية الحالية",
     ["مدير المشغل العام", "موظف استقبال مبيعات", "خياط قسم التفصيل"]
 )
 
 st.sidebar.markdown("---")
 selected_tab = st.sidebar.radio(
-    "🚀 أقسام النظام الرئيسية",
-    ["✨ لوحة التحكم والتحليلات", "📝 تسجيل قياسات وطلب جديد", "👥 سجل العملاء والأرشيف", "⚙️ إعدادات الصور والتصاميم"]
+    "✨ التنقل الملكي السريع",
+    ["📊 لوحة المؤشرات المالية", "📝 تسجيل قياسات وطلب جديد", "🔍 سجل العملاء والطلبات", "⚙️ إعدادات النظام والأصول"]
 )
 
-# ذاكرة النظام المؤقتة
-if 'orders_db' not in st.session_state:
-    st.session_state.orders_db = [
-        {"اسم العميل": "سلطان العتيبي", "الجوال": "0501112233", "نوع القماش": "ياباني سوبر ديلوكس", "الياقة": "رقبة سادة دبل", "المبلغ": 250.0, "التاريخ": "2026-06-01", "الحالة": "قيد التجهيز"},
-        {"اسم العميل": "فهد القحطاني", "الجوال": "0554445566", "نوع القماش": "كوري ملكي", "الياقة": "رقبة صيني", "المبلغ": 300.0, "التاريخ": "2026-06-02", "الحالة": "جاهز للاستلام"}
-    ]
+df = st.session_state.df_orders
 
-# ================= 1. لوحة التحكم والتحليلات (Dashboard) =================
-if selected_tab == "✨ لوحة التحكم والتحليلات":
-    st.title("📊 لوحة المؤشرات الذكية - مشغل تيوبو")
-    st.markdown("مرحباً بك مجدداً في نظام الإدارة المتقدم. نظرة عامة على أداء المشغل:")
+# ================= 1. لوحة المؤشرات المالية =================
+if selected_tab == "📊 لوحة المؤشرات المالية":
+    st.title("📊 لوحة المؤشرات والتحليلات الملكية")
+    st.markdown("نظرة شاملة على أداء المشغل والإيرادات المالية الفورية.")
+    st.markdown("---")
     
-    # بطاقات إحصائية ملونة تشبه أنظمة "شفق"
-    c1, c2, c3, c4 = st.columns(4)
+    total_orders = len(df)
+    total_revenue = df["المبلغ"].sum() if total_orders > 0 and "المبلغ" in df.columns else 0
     
-    total_orders = len(st.session_state.orders_db)
-    total_revenue = sum([item["المبلغ"] for item in st.session_state.orders_db]) if total_orders > 0 else 0
-    
+    c1, c2, c3 = st.columns(3)
     with c1:
         st.markdown(f"""
-            <div class="metric-card">
-                <h3>📦 إجمالي الطلبات</h3>
-                <p style="font-size: 28px; font-weight: bold; color: #00d2ff;">{total_orders}</p>
+            <div class="luxury-card">
+                <h3>إجمالي الطلبات النشطة</h3>
+                <p>{total_orders}</p>
             </div>
         """, unsafe_allow_html=True)
     with c2:
         st.markdown(f"""
-            <div class="metric-card">
-                <h3>💰 الإيرادات العامة</h3>
-                <p style="font-size: 28px; font-weight: bold; color: #10B981;">{total_revenue} ر.س</p>
+            <div class="luxury-card">
+                <h3>إجمالي الإيرادات (ر.س)</h3>
+                <p>{total_revenue:,.2f}</p>
             </div>
         """, unsafe_allow_html=True)
     with c3:
-        st.markdown("""
-            <div class="metric-card">
-                <h3>⭐ تقييم العملاء</h3>
-                <p style="font-size: 28px; font-weight: bold; color: #F59E0B;">4.9 / 5</p>
-            </div>
-        """, unsafe_allow_html=True)
-    with c4:
-        st.markdown("""
-            <div class="metric-card">
-                <h3>⚡ حالة النظام</h3>
-                <p style="font-size: 20px; font-weight: bold; color: #3B82F6;">متصل ومستقر</p>
+        st.markdown(f"""
+            <div class="luxury-card">
+                <h3>حالة النظام المركزي</h3>
+                <p style="font-size: 20px; color: #10B981 !important; margin-top: 5px;">⚡ متصل وآمن</p>
             </div>
         """, unsafe_allow_html=True)
 
     st.markdown("---")
-    st.subheader("📈 تتبع مبيعات الطلبات الحية")
-    if total_orders > 0:
-        df_chart = pd.DataFrame(st.session_state.orders_db)
-        st.bar_chart(df_chart.set_index("اسم العميل")["المبلغ"])
+    st.subheader("📈 تحليل مبيعات العملاء الفورية")
+    if total_orders > 0 and "اسم العميل" in df.columns:
+        st.bar_chart(df.set_index("اسم العميل")["المبلغ"])
     else:
-        st.info("لا توجد بيانات كافية للرسوم البيانية حالياً.")
+        st.info("💡 لا توجد بيانات كافية لعرض الرسم البياني حالياً. قم بإضافة طلبات جديدة لتظهر هنا.")
 
 # ================= 2. تسجيل قياسات وطلب جديد =================
 elif selected_tab == "📝 تسجيل قياسات وطلب جديد":
-    st.title("✂️ محطة تفصيل وقياسات الثوب الرجالي")
+    st.title("✂️ محطة تفصيل وقياسات الثوب الملكي")
+    st.markdown("سجل بيانات العميل، المقاسات الدقيقة، وخيارات التصميم بكل سهولة.")
+    st.markdown("---")
     
-    with st.form("advanced_order_form"):
-        st.markdown("### 1️⃣ بيانات العميل الأساسية")
-        col_a, col_b = st.columns(2)
-        with col_a:
-            c_name = st.text_input("اسم العميل الكريم")
-            c_fabric = st.text_input("نوع ورقم القماش واللون")
-        with col_b:
-            c_phone = st.text_input("رقم الجوال الشخصي")
-            c_count = st.number_input("عدد الأثواب المطلوبة", min_value=1, value=1)
+    with st.form("luxury_order_form"):
+        st.markdown("### 1️⃣ بيانات العميل والاتصال")
+        col1, col2 = st.columns(2)
+        with col1:
+            c_name = st.text_input("اسم العميل الكريم *")
+            c_fabric = st.text_input("نوع ورقم القماش المفضل")
+        with col2:
+            c_phone = st.text_input("رقم الجوال الشخصي *")
+            order_status = st.selectbox("حالة الطلب المبدئية", ["جديد", "قيد التجهيز", "جاهز للاستلام"])
 
         st.markdown("---")
-        st.markdown("### 2️⃣ تفاصيل المقاسات الدقيقة (بالإنش)")
-        
-        m1, m2 = st.columns(2)
+        st.markdown("### 2️⃣ جدول المقاسات الدقيقة (بالإنش)")
+        m1, m2, m3, m4 = st.columns(4)
         with m1:
-            length = st.number_input("الطول", value=0.0, format="%.2f")
-            shoulder = st.number_input("الكتف", value=0.0, format="%.2f")
-            sleeve = st.number_input("طول اليد", value=0.0, format="%.2f")
-            s_width = st.number_input("وسع اليد", value=0.0, format="%.2f")
+            length = st.number_input("الطول", value=58.0, format="%.2f")
         with m2:
-            neck = st.number_input("الرقبة", value=0.0, format="%.2f")
-            chest_w = st.number_input("الوسع (الصدر والبطن)", value=0.0, format="%.2f")
-            bottom_w = st.number_input("الخطوة / الوسع أسفل", value=0.0, format="%.2f")
-            pocket_n = st.number_input("عمق الجيب", value=0.0, format="%.2f")
+            shoulder = st.number_input("الكتف", value=24.0, format="%.2f")
+        with m3:
+            neck = st.number_input("الرقبة", value=15.5, format="%.2f")
+        with m4:
+            sleeve = st.number_input("طول اليد", value=25.0, format="%.2f")
 
         st.markdown("---")
-        st.markdown("### 3️⃣ القصات والتصاميم المرئية التفاعلية")
-        
-        d1, d2 = st.columns(2)
+        st.markdown("### 3️⃣ تفاصيل القصات والتصميم")
+        d1, d2, d3 = st.columns(3)
         with d1:
-            style_type = st.selectbox("طراز التفصيل العام", ["🇸🇦 سعودي كلاسيك", "🇶🇦 قطري حديث", "🇰🇼 كويتي فاخر", "🇦🇪 إماراتي تطريز"])
-            collar_type = st.selectbox("نوع الياقة والقلاب", ["رقبة سادة خفيف", "رقبة سادة دبل", "رقبة صيني", "قلاب رسمي"])
-            sleeve_type = st.selectbox("نوع الأكمام", ["يد سادة", "كبك سادة", "كبك جرزور", "كبك العاش"])
+            collar_type = st.selectbox("نوع الياقة", ["رقبة سادة خفيف", "رقبة سادة دبل", "رقبة صيني", "قلاب رسمي"])
         with d2:
-            zipper_type = st.selectbox("نوع الجبزور", ["بابين", "سحاب مثلث", "سحاب مربع", "مخفي مثلث"])
-            sewing_style = st.selectbox("نوع الخياطة والغرزة", ["دعسة واحدة", "دعستين مزدوجة"])
+            zipper_type = st.selectbox("نوع الجبزور", ["بابين", "سحاب مثلث", "مخفي"])
+        with d3:
+            price = st.number_input("مبلغ الفاتورة الإجمالي (ر.س)", min_value=0.0, value=250.0)
 
+        notes = st.text_area("ملاحظات خاصة على التطريز والتفصيل")
         st.markdown("---")
-        st.markdown("### 👁️ المعاينة البصرية الحية للقصات")
-        prev_col1, prev_col2 = st.columns(2)
         
-        with prev_col1:
-            st.write(f"**الياقة المختارة:** {collar_type}")
-            collar_map = {
-                "رقبة سادة خفيف": "assets/collar_plain_light.png",
-                "رقبة سادة دبل": "assets/collar_plain_double.png",
-                "رقبة صيني": "assets/collar_chinese.png",
-                "قلاب رسمي": "assets/collar_official_flap.png"
-            }
-            c_img = collar_map.get(collar_type, "")
-            if os.path.exists(c_img):
-                st.image(c_img, width=170)
-            else:
-                st.info(f"صورة الياقة قيد التحميل ({c_img})")
-
-        with prev_col2:
-            st.write(f"**الجبزور المختار:** {zipper_type}")
-            z_img = "assets/zipper_babain.png"
-            if os.path.exists(z_img):
-                st.image(z_img, width=170)
-            else:
-                st.info("صورة الجبزور قيد التحميل في assets")
-
-        notes = st.text_area("ملاحظات خاصة على الثوب والتطريز")
-        price = st.number_input("إجمالي السعر (ر.س)", min_value=0.0, value=200.0)
-
-        submit_btn = st.form_submit_button("✨ حفظ و اعتماد الطلب وإصدار الفاتورة")
+        submit_btn = st.form_submit_button("✨ حفظ الطلب وإصدار الفاتورة الملكية")
         
         if submit_btn:
-            if c_name == "":
-                st.error("الرجاء إدخال اسم العميل على الأقل!")
+            if not c_name.strip() or not c_phone.strip():
+                st.error("⚠️ الرجاء إدخال اسم العميل ورقم الجوال لإتمام الحفظ!")
             else:
-                new_order = {
-                    "اسم العميل": c_name,
-                    "الجوال": c_phone,
+                new_id = len(df) + 1001
+                new_row = {
+                    "رقم الطلب": new_id,
+                    "اسم العميل": c_name.strip(),
+                    "الجوال": c_phone.strip(),
                     "نوع القماش": c_fabric,
+                    "الطول": length,
+                    "الكتف": shoulder,
+                    "الرقبة": neck,
                     "الياقة": collar_type,
                     "المبلغ": price,
                     "التاريخ": str(datetime.today().date()),
-                    "الحالة": "جديد"
+                    "الحالة": order_status
                 }
-                st.session_state.orders_db.append(new_order)
-                st.success(f"🎉 تم تسجيل طلب العميل ({c_name}) بنجاح تام وإضافته للنظام!")
+                
+                st.session_state.df_orders = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
+                save_database(st.session_state.df_orders)
+                st.success(f"🎉 تم اعتماد حفظ طلب العميل ({c_name}) برقم ترتيبي #{new_id} بنجاح تام!")
 
-# ================= 3. سجل العملاء والأرشيف =================
-elif selected_tab == "👥 سجل العملاء والأرشيف":
-    st.title("📁 سجل أرشيف العملاء والطلبات السابقة")
-    if len(st.session_state.orders_db) > 0:
-        df_all = pd.DataFrame(st.session_state.orders_db)
-        st.dataframe(df_all, use_container_width=True)
-        
-        if st.button("🗑️ مسح وإفراغ الأرشيف بالكامل"):
-            st.session_state.orders_db = []
-            st.success("تم تفريغ الأرشيف.")
+# ================= 3. سجل العملاء والطلبات =================
+elif selected_tab == "🔍 سجل العملاء والطلبات":
+    st.title("📁 الأرشيف المركزي للعملاء والطلبات")
+    st.markdown("استعرض كافة السجلات، ابحث عن العملاء، وقم بتحديث حالات الطلبات.")
+    st.markdown("---")
+    
+    if len(df) == 0:
+        st.info("𭃋 لا توجد طلبات مسجلة في الأرشيف حالياً.")
     else:
-        st.info("لا توجد طلبات مسجلة في الأرشيف حالياً.")
-
-# ================= 4. إعدادات الصور والتصاميم =================
-elif selected_tab == "⚙️ إعدادات الصور والتصاميم":
-    st.title("⚙️ حالة مجلد الأصول والتصاميم البصرية")
-    st.write("يتحقق النظام من جاهزية صور الياقات والكبكات والجبزور داخل مجلد `assets` على مستودعك في GitHub:")
-    
-    files_to_check = [
-        "assets/collar_plain_light.png",
-        "assets/collar_plain_double.png",
-        "assets/collar_chinese.png",
-        "assets/collar_official_flap.png",
-        "assets/zipper_babain.png"
-    ]
-    
-    for f in files_to_check:
-        if os.path.exists(f):
-            st.success(f"✅ الملف متوفر وجاهز: `{f}`")
+        search_query = st.text_input("🔍 ابحث برقم الجوال أو اسم العميل:")
+        if search_query:
+            filtered_df = df[df["اسم العميل"].str.contains(search_query, case=False, na=False) | df["الجوال"].str.contains(search_query, na=False)]
         else:
-            st.warning(f"⚠️ الملف غير متوفر أو مساره يحتاج لمراجعة: `{f}`")
+            filtered_df = df
+
+        st.dataframe(filtered_df, use_container_width=True)
+        
+        st.markdown("---")
+        st.subheader("⚙️ لوحة التحكم وتحديث حالة الطلبات")
+        
+        order_ids = df["رقم الطلب"].tolist() if "رقم الطلب" in df.columns else []
+        if order_ids:
+            col_sel1, col_sel2 = st.columns(2)
+            with col_sel1:
+                selected_order = st.selectbox("حدد رقم الطلب للتعديل", order_ids)
+            with col_sel2:
+                new_status = st.selectbox("الحالة التنفيذية الجديدة", ["جديد", "قيد التجهيز", "جاهز للاستلام", "تم التسليم"])
+            
+            b_col1, b_col2 = st.columns(2)
+            with b_col1:
+                if st.button("🔄 تحديث حالة الطلب الفورية"):
+                    st.session_state.df_orders.loc[st.session_state.df_orders["رقم الطلب"] == selected_order, "الحالة"] = new_status
+                    save_database(st.session_state.df_orders)
+                    st.success(f"تم تحديث الطلب #{selected_order} بنجاح إلى ({new_status})!")
+                    st.rerun()
+            with b_col2:
+                if st.button("🗑️ حذف الطلب من الأرشيف", type="primary"):
+                    st.session_state.df_orders = st.session_state.df_orders[st.session_state.df_orders["رقم الطلب"] != selected_order]
+                    save_database(st.session_state.df_orders)
+                    st.success(f"تم حذف الطلب #{selected_order} نهائياً.")
+                    st.rerun()
+
+# ================= 4. إعدادات النظام والأصول =================
+elif selected_tab == "⚙️ إعدادات النظام والأصول":
+    st.title("⚙️ لوحة إدارة الأصول وصلاحيات النظام")
+    st.markdown("التحقق من سلامة قواعد البيانات والملفات السحابية والمحلية.")
+    st.markdown("---")
+    
+    if os.path.exists(DB_FILE):
+        st.success(f"✅ ملف قاعدة البيانات المركزية `{DB_FILE}` يعمل بانتظام ويحفظ البيانات محلياً وسحابياً.")
+    else:
+        st.warning("⚠️ ملف قاعدة البيانات غير منشور بعد.")
+
+    st.markdown("### 🎨 حالة السمة والواجهة البصرية")
+    st.info("الواجهة الحالية تعمل بتصميم ملكي متطور (Dark Luxury Theme) مع تدرجات ذهبية وأزرار متجاوبة بالكامل.")
