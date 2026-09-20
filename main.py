@@ -3,10 +3,10 @@ import streamlit as st
 st.set_page_config(page_title="خياطة تيوبو - تفاصيل الثوب", layout="centered")
 
 st.title("خياطة تيوبو للخياطة الرجالية")
-st.subheader("تسجيل تفاصيل الثوب والمقاسات")
+st.subheader("تسجيل تفاصيل الثوب والمقاسات والتصميم")
 
 with st.form("tailoring_form"):
-    st.markdown("### بيانات العميل الأساسية")
+    st.markdown("### 1. بيانات العميل الأساسية")
     col1, col2 = st.columns(2)
     with col1:
         client_name = st.text_input("اسم العميل")
@@ -22,7 +22,7 @@ with st.form("tailoring_form"):
         delivery_date = st.date_input("تاريخ التسليم")
 
     st.markdown("---")
-    st.markdown("### جدول المقاسات")
+    st.markdown("### 2. جدول المقاسات (بالإنش)")
     
     m_col1, m_col2 = st.columns(2)
     with m_col1:
@@ -35,18 +35,48 @@ with st.form("tailoring_form"):
         sleeve_width = st.number_input("وسع اليد", value=0.0)
 
     st.markdown("---")
-    st.markdown("### خيارات التصميم والقص")
+    st.markdown("### 3. خيارات التصميم والقص (حسب النماذج القياسية)")
     
     d_col1, d_col2 = st.columns(2)
     with d_col1:
-        sleeve_type = st.selectbox("نوع اليد", ["يد سادة", "يد كبك سادة", "عادي جيبرور"])
-        collar_type = st.selectbox("نوع القلاب / الرقبة", ["نوع القلاب", "رقبة سادة دبل", "رقبة سادة خفيف"])
+        sleeve_type = st.selectbox(
+            "تصميم اليد (الأكمام)", 
+            [
+                "✂️ يد سادة (عادي)", 
+                "👔 يد كبك سادة", 
+                "📐 عادي جيبرور"
+            ]
+        )
+        collar_type = st.selectbox(
+            "تصميم الرقبة والقلاب", 
+            [
+                "👔 رقبة سادة دبل", 
+                "👕 رقبة سادة خفيف", 
+                "📌 قلاب عادي"
+            ]
+        )
     with d_col2:
-        pocket_type = st.selectbox("نوع الجيب", ["جيب بدون حشوة", "جيوب أخرى"])
-        sewing_type = st.selectbox("نوع الخياطة", ["دعسة", "دعستين", "قطري", "كويتي كامل", "كويتي كسرة أمام"])
+        pocket_type = st.selectbox(
+            "تصميم الجيوب", 
+            [
+                "📥 جيب بدون حشوة", 
+                "📱 جيب جوال خاص", 
+                "📂 جيوب أخرى معتمدة"
+            ]
+        )
+        sewing_type = st.selectbox(
+            "نوع الخياطة والغرزة", 
+            [
+                "🧵 دعسة", 
+                "🧵🧵 دعستين", 
+                "⚡ قطري", 
+                "⭐ كويتي كامل", 
+                "🌟 كويتي كسرة أمام"
+            ]
+        )
 
-    notes = st.text_area("الملاحظات")
+    notes = st.text_area("الملاحظات الإضافية")
 
-    submitted = st.form_submit_button("حفظ وحفظ المقاسات")
+    submitted = st.form_submit_button("حفظ تفاصيل الطلب والمقاسات")
     if submitted:
-        st.success("تم حفظ تفاصيل المقاسات والطلب بنجاح في خياطة تيوبو!")
+        st.success("تم حفظ تفاصيل الطلب بنجاح في نظام خياطة تيوبو!")
