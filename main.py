@@ -49,7 +49,14 @@ with st.form("tailoring_form"):
         length = st.number_input("الطول", value=0.0, format="%.2f")
         shoulder = st.number_input("الكتف", value=0.0, format="%.2f")
         sleeve_length = st.number_input("طول اليد", value=0.0, format="%.2f")
-        sleeve_width = st.text_input("وسع اليد (اكتب مقاسين هنا)")
+        
+        # تقسيم خلية "وسع اليد" إلى جزأين (جهة يمنى وجهة يسرى)
+        st.markdown("وسع اليد")
+        sw_col1, sw_col2 = st.columns(2)
+        with sw_col1:
+            sleeve_width_right = st.text_input("الجهة اليمنى", placeholder="الرقم")
+        with sw_col2:
+            sleeve_width_left = st.text_input("الجهة اليسرى", placeholder="الرقم")
 
     with m_col2:
         neck = st.number_input("الرقبة", value=0.0, format="%.2f")
@@ -71,7 +78,6 @@ with st.form("tailoring_form"):
                 "🇦🇪 إماراتي"
             ]
         )
-        # أنواع الياقات بناءً على الدليل المرفق
         collar_type = st.selectbox(
             "نوع الياقة", 
             [
@@ -82,7 +88,6 @@ with st.form("tailoring_form"):
                 "📐 قلاب رسمي"
             ]
         )
-        # أنواع الأكمام بناءً على الدليل المرفق
         sleeve_type = st.selectbox(
             "نوع الأكمام", 
             [
@@ -93,7 +98,6 @@ with st.form("tailoring_form"):
             ]
         )
     with d_col2:
-        # إضافة خلية نوع الجبزور بناءً على دليل أنواع السحاب في الصورة
         zipper_type = st.selectbox(
             "نوع الجبزور",
             [
@@ -113,7 +117,6 @@ with st.form("tailoring_form"):
             ]
         )
 
-    # أنواع الجيوب بناءً على الدليل المرفق (جميع الجيوب في الجهة اليسرى)
     pocket_options = [
         "🟦 مربع",
         "🔻 مشطوف",
@@ -127,4 +130,4 @@ with st.form("tailoring_form"):
 
     submitted = st.form_submit_button("حفظ تفاصيل الطلب والمقاسات")
     if submitted:
-        st.success(f"تم حفظ الطلب بنجاح! الياقة: {collar_type} | الجبزور: {zipper_type} | الجيب: {pocket_choice}")
+        st.success(f"تم حفظ الطلب بنجاح! وسع اليد (يمين: {sleeve_width_right} | يسار: {sleeve_width_left})")
